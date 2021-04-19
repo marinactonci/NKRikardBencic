@@ -38,7 +38,7 @@ app.get('/karta', async(request, response) => {
         })
 })
 
-app.get('/meteoStationSensor', async(request, response) => {
+app.get('/prosleUtakmice', async(request, response) => {
     if (typeof request.query.id === 'undefined') {
         let res = []
         db.collection('meteoStationSensor').get()
