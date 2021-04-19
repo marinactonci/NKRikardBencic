@@ -38,77 +38,264 @@ app.get('/karta', async(request, response) => {
         })
 })
 
-app.get('/prosleUtakmice', async(request, response) => {
-    if (typeof request.query.id === 'undefined') {
-        let res = []
-        db.collection('meteoStationSensor').get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    let document = {
-                        id: doc.id,
-                        data: doc.data()
-                    }
-                    res.push(document)
-                })
-                return response.send(res)
+app.post('/karta', (request, response) => {
+    if (Object.keys(request.body).length) {
+        db.collection('karta').doc().set(request.body)
+            .then(function() {
+                return response.send(
+                    "Document successfully written - created!"
+                )
             })
             .catch(function(error) {
                 return response.send(
-                    "Error getting documents: " + error
+                    "Error writing document: " + error
                 )
             })
     } else {
-        if (typeof request.query.subCollection === 'undefined') {
-            let docRef = db
-                .collection('meteoStationSensor')
-                .doc(request.query.id)
-            docRef.get()
-                .then((doc) => {
-                    if (typeof doc.data() !== 'undefined') {
-                        let document = {
-                            id: doc.id,
-                            data: doc.data()
-                        }
-                        return response.send(document)
-                    } else {
-                        let error = ("Error getting document " +
-                            id +
-                            ": The document is undefined"
-                        )
-                        return response.send(error)
-                    }
-                })
-                .catch(function(error) {
-                    return response.send(error)
-                })
-        } else {
-            let res = []
-            let cRef = db
-                .collection('meteoStationSensor')
-                .doc(request.query.id)
-                .collection(request.query.subCollection)
-            cRef.get()
-                .then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                        let document = {
-                            id: doc.id,
-                            data: doc.data()
-                        }
-                        res.push(document)
-                    })
-                    return response.send(res)
-                })
-                .catch(function(error) {
-                    return response.send(
-                        "Error getting documents " +
-                        "of subcollection: " +
-                        error
-                    )
-                })
-        }
+        return response.send(
+            "No post data for new document. " +
+            "A new document is not created!"
+        )
     }
 })
 
+app.put('/karta', (request, response) => {
+    if (Object.keys(request.body).length) {
+        if (typeof request.query.id !== 'undefined') {
+            db.collection('karta')
+                .doc(request.query.id)
+                .set(request.body)
+                .then(function() {
+                    return response.send(
+                        "Document successfully written - " +
+                        "updated!"
+                    )
+                })
+                .catch(function(error) {
+                    return response.send(
+                        "Error writing document: " + error
+                    )
+                })
+        } else {
+            return response.send(
+                "A parameter id is not set. " +
+                "A document is not updated!"
+            )
+        }
+    } else {
+        return response.send(
+            "No post data for new document. " +
+            "A document is not updated!"
+        )
+    }
+})
+
+app.delete('/karta', (request, response) => {
+    if (typeof request.query.id !== 'undefined') {
+        db.collection('karta').doc(request.query.id).delete()
+            .then(function() {
+                return response.send(
+                    "Document successfully deleted!"
+                )
+            })
+            .catch(function(error) {
+                return response.send(
+                    "Error removing document: " + error
+                )
+            })
+    } else {
+        return response.send(
+            "A parameter id is not set. " +
+            "A document is not deleted!"
+        )
+    }
+})
+
+app.get('/prosleUtakmice', async(request, response) => {
+    let id = (
+        typeof request.query.id !== 'undefined' ?
+        request.query.id :
+        null
+    )
+    let order = null
+    let where = null
+    if (id === null) {
+        order = models.getOrder(request.query)
+        where = models.getWhere(request.query)
+    }
+    models.get(db, 'prosleUtakmice', id, order, where)
+        .then(res => {
+            return response.send(res)
+        }).catch((error) => {
+            return response.send(error)
+        })
+})
+
+app.post('/prosleUtakmice', (request, response) => {
+    if (Object.keys(request.body).length) {
+        db.collection('prosleUtakmice').doc().set(request.body)
+            .then(function() {
+                return response.send(
+                    "Document successfully written - created!"
+                )
+            })
+            .catch(function(error) {
+                return response.send(
+                    "Error writing document: " + error
+                )
+            })
+    } else {
+        return response.send(
+            "No post data for new document. " +
+            "A new document is not created!"
+        )
+    }
+})
+
+app.put('/prosleUtakmice', (request, response) => {
+    if (Object.keys(request.body).length) {
+        if (typeof request.query.id !== 'undefined') {
+            db.collection('prosleUtakmice')
+                .doc(request.query.id)
+                .set(request.body)
+                .then(function() {
+                    return response.send(
+                        "Document successfully written - " +
+                        "updated!"
+                    )
+                })
+                .catch(function(error) {
+                    return response.send(
+                        "Error writing document: " + error
+                    )
+                })
+        } else {
+            return response.send(
+                "A parameter id is not set. " +
+                "A document is not updated!"
+            )
+        }
+    } else {
+        return response.send(
+            "No post data for new document. " +
+            "A document is not updated!"
+        )
+    }
+})
+
+app.delete('/prosleUtakmice', (request, response) => {
+    if (typeof request.query.id !== 'undefined') {
+        db.collection('prosleUtakmice').doc(request.query.id).delete()
+            .then(function() {
+                return response.send(
+                    "Document successfully deleted!"
+                )
+            })
+            .catch(function(error) {
+                return response.send(
+                    "Error removing document: " + error
+                )
+            })
+    } else {
+        return response.send(
+            "A parameter id is not set. " +
+            "A document is not deleted!"
+        )
+    }
+})
+
+app.get('/nadolazeceUtakmice', async(request, response) => {
+    let id = (
+        typeof request.query.id !== 'undefined' ?
+        request.query.id :
+        null
+    )
+    let order = null
+    let where = null
+    if (id === null) {
+        order = models.getOrder(request.query)
+        where = models.getWhere(request.query)
+    }
+    models.get(db, 'nadolazeceUtakmice', id, order, where)
+        .then(res => {
+            return response.send(res)
+        }).catch((error) => {
+            return response.send(error)
+        })
+})
+
+app.post('/nadolazeceUtakmice', (request, response) => {
+    if (Object.keys(request.body).length) {
+        db.collection('nadolazeceUtakmice').doc().set(request.body)
+            .then(function() {
+                return response.send(
+                    "Document successfully written - created!"
+                )
+            })
+            .catch(function(error) {
+                return response.send(
+                    "Error writing document: " + error
+                )
+            })
+    } else {
+        return response.send(
+            "No post data for new document. " +
+            "A new document is not created!"
+        )
+    }
+})
+
+app.put('/nadolazeceUtakmice', (request, response) => {
+    if (Object.keys(request.body).length) {
+        if (typeof request.query.id !== 'undefined') {
+            db.collection('nadolazeceUtakmice')
+                .doc(request.query.id)
+                .set(request.body)
+                .then(function() {
+                    return response.send(
+                        "Document successfully written - " +
+                        "updated!"
+                    )
+                })
+                .catch(function(error) {
+                    return response.send(
+                        "Error writing document: " + error
+                    )
+                })
+        } else {
+            return response.send(
+                "A parameter id is not set. " +
+                "A document is not updated!"
+            )
+        }
+    } else {
+        return response.send(
+            "No post data for new document. " +
+            "A document is not updated!"
+        )
+    }
+})
+
+app.delete('/nadolazeceUtakmice', (request, response) => {
+    if (typeof request.query.id !== 'undefined') {
+        db.collection('nadolazeceUtakmice').doc(request.query.id).delete()
+            .then(function() {
+                return response.send(
+                    "Document successfully deleted!"
+                )
+            })
+            .catch(function(error) {
+                return response.send(
+                    "Error removing document: " + error
+                )
+            })
+    } else {
+        return response.send(
+            "A parameter id is not set. " +
+            "A document is not deleted!"
+        )
+    }
+})
 
 app.listen(3000, () => {
     console.log("Server running on port 3000");
