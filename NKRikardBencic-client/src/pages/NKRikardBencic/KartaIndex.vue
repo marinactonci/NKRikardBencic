@@ -97,7 +97,7 @@ export default {
           sortable: true
         },
         {
-          name: 'akcije',
+          name: 'actions',
           label: 'Akcije',
           align: 'left',
           field: null,
@@ -121,7 +121,7 @@ export default {
       this.openDialog = true
     },
     onOKClick () {
-      if (!this.$refs.datum.hasError && !this.$refs.Cijena.hasError) {
+      if (!this.$refs.Datum.hasError && !this.$refs.Cijena.hasError) {
         const collectionRef = this.$db.collection('karta')
         if (this.karta.UIDkarta === null) {
           collectionRef
