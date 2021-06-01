@@ -6,10 +6,10 @@
         >
             <q-table
                 v-if="isMounted"
-                title="Karte"
-                :data="sensors"
+                title="Karta"
+                :data="kartas"
                 :columns="columns"
-                row-key="sifraKarte"
+                row-key="UIDKarta"
                 flat
             >
                 <template v-slot:top>
@@ -55,18 +55,18 @@
                 <q-separator />
                 <q-card-section>
                     <q-input
-                        ref="Cijena"
-                        :error="!sensor.unitOfMeasure || sensor.type.unitOfMeasure === 0"
-                        error-message="Cijena je obavezna."
-                        label="Cijena"
-                        v-model="sensor.unitOfMeasure"
-                    />
-                    <q-input
                         ref="Datum"
-                        :error="!sensor.type || sensor.type.lenght === 0"
+                        :error="!karta.datum || karta.datum.lenght === 0"
                         error-message="Datum je obavezan."
                         label="Datum"
-                        v-model="sensor.type"
+                        v-model="karta.datum"
+                    />
+                    <q-input
+                        ref="Cijena"
+                        :error="!karta.cijena || karta.datum.cijena === 0"
+                        error-message="Cijena je obavezna."
+                        label="Cijena"
+                        v-model="karta.cijena"
                     />
                 </q-card-section>
                 <q-card-actions align="right">
@@ -91,32 +91,32 @@ export default {
   data () {
     return {
       openDialog: false,
-      sensor: null,
-      sensorModel: {
-        UIDSensor: null,
-        type: null,
-        unitOfMeasure: null
+      karta: null,
+      kartaModel: {
+        UIDKarta: null,
+        datum: null,
+        cijena: null
       },
       isMounted: false,
-      sensors: [],
+      kartas: [],
       columns: [
         {
-          name: 'type',
-          label: 'Type',
+          name: 'datum',
+          label: 'Datum',
           align: 'left',
-          field: 'type',
+          field: 'datum',
           sortable: true
         },
         {
-          name: 'unitOfMeasure',
-          label: 'Unit of Measure',
+          name: 'cijena',
+          label: 'Cijena',
           align: 'left',
-          field: 'unitOfMeasure',
+          field: 'cijena',
           sortable: true
         },
         {
-          name: 'actions',
-          label: 'Actions',
+          name: 'akcije',
+          label: 'Akcije',
           align: 'left',
           field: null,
           sortable: false
@@ -129,28 +129,28 @@ export default {
     collectionRef.get()
       .then((rows) => {
         rows.forEach((row) => {
-          this.sensors.push(row.data())
+          this.kartas.push(row.data())
         })
         this.isMounted = true
       })
   },
   methods: {
     onNewRow () {
-      this.sensor = JSON.parse(JSON.stringify(this.sensorModel))
+      this.karta = JSON.parse(JSON.stringify(this.kartaModel))
       this.openDialog = true
     },
     onOKClick () {
-      if (!this.$refs.type.hasError && !this.$refs['Unit Of Measure'].hasError) {
+      if (!this.$refs.datum.hasError && !this.$refs.Cijena.hasError) {
         const collectionRef = this.$db.collection('karta')
-        if (this.sensor.UIDSensor === null) {
-          collectionRef.add(this.sensor)
+        if (this.karta.UIDKarta === null) {
+          collectionRef.add(this.karta)
             .then((doc) => {
-              this.sensor.UIDSensor = doc.id
+              this.karta.UIDKarta = doc.id
               const docRef = this.$db.collection('karta').doc(doc.id)
-              docRef.update({ UIDSensor: doc.id })
+              docRef.update({ UIDKarta: doc.id })
                 .then((response) => {
-                  this.sensor.UIDSensor = doc.id
-                  this.sensors.push(this.sensor)
+                  this.karta.UIDKarta = doc.id
+                  this.kartas.push(this.karta)
                   this.openDialog = false
                 })
                 .catch(function (error) {
@@ -161,13 +161,13 @@ export default {
               console.error('Error adding document: ', error)
             })
         } else {
-          const docRef = this.$db.collection('karta').doc(this.sensor.UIDSensor)
-          docRef.set(this.sensor)
+          const docRef = this.$db.collection('karta').doc(this.karta.UIDKarta)
+          docRef.set(this.karta)
             .then((response) => {
-              const sensor = this.sensors.find(sensor => sensor.UIDSensor === this.sensor.UIDSensor)
-              if (sensor) {
-                for (const attributeName in this.sensor) {
-                  sensor[attributeName] = JSON.parse(JSON.stringify(this.sensor[attributeName]))
+              const karta = this.kartas.find(karta => karta.UIDKarta === this.karta.UIDKarta)
+              if (karta) {
+                for (const attributeName in this.karta) {
+                  karta[attributeName] = JSON.parse(JSON.stringify(this.karta[attributeName]))
                 }
               }
               this.openDialog = false
@@ -181,10 +181,10 @@ export default {
     onCancelClick () {
       this.openDialog = false
     },
-    onUpdateRow (sensor) {
-      this.sensor = JSON.parse(JSON.stringify(this.sensorModel))
-      for (const attributeName in this.sensor) {
-        this.sensor[attributeName] = JSON.parse(JSON.stringify(sensor[attributeName]))
+    onUpdateRow (karta) {
+      this.karta = JSON.parse(JSON.stringify(this.kartaModel))
+      for (const attributeName in this.karta) {
+        this.karta[attributeName] = JSON.parse(JSON.stringify(karta[attributeName]))
       }
       this.openDialog = true
     },
@@ -195,12 +195,12 @@ export default {
         ok: true,
         cancel: true
       }).onOk(() => {
-        const docRef = this.$db.collection('karta').doc(row.UIDSensor)
+        const docRef = this.$db.collection('karta').doc(row.UIDKarta)
         docRef.delete()
           .then(() => {
-            const index = this.sensors.findIndex(sensor => sensor.UIDSensor === row.UIDSensor)
+            const index = this.kartas.findIndex(karta => karta.UIDKarta === row.UIDKarta)
             if (index >= 0) {
-              this.sensors.splice(index, 1)
+              this.kartas.splice(index, 1)
             }
           }).catch((error) => {
             console.error('Error removing document: ', error)
