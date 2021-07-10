@@ -6,7 +6,7 @@
     />
     <p>
       <strong>NK Rikard Benčić</strong> je nogometni klub iz Rijeke, osnovan
-      1948. godine. Trenutno se natječe u 1. Županiskoj nogometnoj lizi
+      1948. godine. Trenutno se natječe u 1. Županijskoj nogometnoj lizi
       Primorsko-goranske županije. Treninzi i domaće utakmice se održavaju na
       Omladinskom stadionu kapaciteta 3000 gledatelja. Od uspjeha se ističe 6.
       mjesto iz sezone 2016./2017. te su među prvima odbili sudjelovanje u
