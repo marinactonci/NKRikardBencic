@@ -37,7 +37,7 @@
                         <q-btn
                             label="Login"
                             type="submit"
-                            color="primary"
+                            color="black"
                         />
                     </q-card-actions>
                 </q-card>

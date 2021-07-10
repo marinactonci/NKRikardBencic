@@ -14,7 +14,8 @@ const routes = [
     children: [
       { path: '/Karta', meta: { auth: true }, component: () => import('pages/NKRikardBencic/KartaIndex.vue') },
       { path: '/NadolazeceUtakmice', meta: { auth: true }, component: () => import('pages/NKRikardBencic/NadolazeceUtakmiceIndex.vue') },
-      { path: '/ProsleUtakmice', meta: { auth: true }, component: () => import('pages/NKRikardBencic/ProsleUtakmiceIndex.vue') }
+      { path: '/ProsleUtakmice', meta: { auth: true }, component: () => import('pages/NKRikardBencic/ProsleUtakmiceIndex.vue') },
+      { path: '/Pocetna', meta: { auth: true }, component: () => import('pages/NKRikardBencic/PocetnaIndex.vue') }
     ]
   }
 ]

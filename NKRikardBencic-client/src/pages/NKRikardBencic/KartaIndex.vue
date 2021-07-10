@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-lg row justify-center">
-    <div class="col" style="max-width: 500px">
+    <div class="col" style="max-width: 800px">
       <q-table
         v-if="isMounted"
         title="kartas"
@@ -10,20 +10,20 @@
         flat
       >
         <template v-slot:top>
-          <q-btn color="primary" label="Add karta" @click="onNewRow" />
+          <q-btn color="black" label="Add karta" @click="onNewRow" />
         </template>
         <template v-slot:body-cell="props">
           <q-td :props="props">
             <div v-if="props.col.name === 'actions'">
               <q-btn
                 dense
-                color="primary"
+                color="black"
                 icon="edit"
                 @click="onUpdateRow(props.row)"
               />
               <q-btn
                 dense
-                color="primary"
+                color="black"
                 icon="delete"
                 @click="onDeleteRow(props.row)"
               />
@@ -53,15 +53,36 @@
           />
           <q-input
             ref="Cijena"
-            :error="!karta.cijena || karta.datum.cijena === 0"
+            :error="!karta.cijena || karta.cijena.lenght === 0"
             error-message="Cijena is required."
             label="Cijena"
             v-model="karta.cijena"
           />
+          <q-input
+            ref="Sektor"
+            :error="!karta.sektor || karta.sektor.length === 0"
+            error-message="Sektor is required."
+            label="Sektor"
+            v-model="karta.sektor"
+          />
+          <q-input
+            ref="Red"
+            :error="!karta.red || karta.red.length === 0"
+            error-message="Red is required."
+            label="Red"
+            v-model="karta.red"
+          />
+          <q-input
+            ref="Sjedalo"
+            :error="!karta.sjedalo || karta.sjedalo.length === 0"
+            error-message="Sjedalo is required."
+            label="Sjedalo"
+            v-model="karta.sjedalo"
+          />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn color="primary" label="OK" @click="onOKClick" />
-          <q-btn color="primary" label="Cancel" @click="onCancelClick" />
+          <q-btn color="black" label="OK" @click="onOKClick" />
+          <q-btn color="black" label="Cancel" @click="onCancelClick" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -77,7 +98,10 @@ export default {
       kartaModel: {
         UIDkarta: null,
         datum: null,
-        cijena: null
+        cijena: null,
+        sektor: null,
+        red: null,
+        sjedalo: null
       },
       isMounted: false,
       kartas: [],
@@ -94,6 +118,27 @@ export default {
           label: 'Cijena',
           align: 'left',
           field: 'cijena',
+          sortable: true
+        },
+        {
+          name: 'sektor',
+          label: 'Sektor',
+          align: 'left',
+          field: 'sektor',
+          sortable: true
+        },
+        {
+          name: 'red',
+          label: 'Red',
+          align: 'left',
+          field: 'red',
+          sortable: true
+        },
+        {
+          name: 'sjedalo',
+          label: 'Sjedalo',
+          align: 'left',
+          field: 'sjedalo',
           sortable: true
         },
         {
@@ -121,7 +166,7 @@ export default {
       this.openDialog = true
     },
     onOKClick () {
-      if (!this.$refs.Datum.hasError && !this.$refs.Cijena.hasError) {
+      if (!this.$refs.Datum.hasError && !this.$refs.Cijena.hasError && !this.$refs.Sektor.hasError && !this.$refs.Red.hasError && !this.$refs.Sjedalo.hasError) {
         const collectionRef = this.$db.collection('karta')
         if (this.karta.UIDkarta === null) {
           collectionRef
